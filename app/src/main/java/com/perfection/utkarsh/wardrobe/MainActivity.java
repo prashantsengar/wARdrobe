@@ -1,27 +1,29 @@
 package com.perfection.utkarsh.wardrobe;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-
-import androidx.core.content.FileProvider;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.core.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity
         System.out.println("1");
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
+        try {
+//            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         System.out.println("2");
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
@@ -86,13 +90,16 @@ public class MainActivity extends AppCompatActivity
             if (photoFile != null) {
                 System.out.println("8");
                 Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.perfection.utkarsh.fileprovider",
+                        "com.perfection.utkarsh.wardrobe.fileprovider",
                         photoFile);
                 System.out.println("9");
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 System.out.println("10");
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
+        }
+        } catch (ActivityNotFoundException e) {
+            // display error state to the user
         }
     }
 
