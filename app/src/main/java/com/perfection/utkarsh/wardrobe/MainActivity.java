@@ -2,6 +2,8 @@ package com.perfection.utkarsh.wardrobe;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,6 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -25,13 +32,67 @@ import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    private String[] FilePathStrings;
+    private File[] listFile;
+    GridView grid;
+    GridViewAdapter adapter;
+    File file;
+    public static Bitmap bmp = null;
+    ImageView imageview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        GridView grid;
+        File aa = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        listFile = aa.listFiles();
+        FilePathStrings = new String[listFile.length];
+        for (int i = 0; i < listFile.length; i++)
+        {
+            FilePathStrings[i] = listFile[i].getAbsolutePath();
+        }
+        grid = (GridView) findViewById(R.id.gridview);
+        adapter = new GridViewAdapter(this, FilePathStrings);
+        grid.setAdapter(adapter);
+
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick (AdapterView<?> parent, View view,
+                                     int position, long id)
+            {
+                imageview = (ImageView)findViewById(R.id.imageView1);
+                int targetWidth = 100;
+                int targetHeight = 100;
+                BitmapFactory.Options bmpOptions = new BitmapFactory.Options();
+                bmpOptions.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(FilePathStrings[position],
+                        bmpOptions);
+                int currHeight = bmpOptions.outHeight;
+                int currWidth = bmpOptions.outWidth;
+                int sampleSize = 1;
+                if (currHeight > targetHeight || currWidth > targetWidth)
+                {
+                    if (currWidth > currHeight)
+                        sampleSize = Math.round((float)currHeight
+                                / (float)targetHeight);
+                    else
+                        sampleSize = Math.round((float)currWidth
+                                / (float)targetWidth);
+                }
+                bmpOptions.inSampleSize = sampleSize;
+                bmpOptions.inJustDecodeBounds = false;
+                bmp = BitmapFactory.decodeFile(FilePathStrings[position],
+                        bmpOptions);
+                imageview.setImageBitmap(bmp);
+                imageview.setScaleType(ImageView.ScaleType.FIT_XY);
+                bmp = null;
+
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -70,34 +131,24 @@ public class MainActivity extends AppCompatActivity
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         try {
-//            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        System.out.println("2");
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            System.out.println("3");
-            File photoFile = null;
-            try {
-                System.out.println("4");
-                photoFile = createImageFile();
-                System.out.println("5555");
-                System.out.print(photoFile);
-            } catch (IOException ex) {
-                System.out.println("6");
-                // Error occurred while creating the File
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                    System.out.print(photoFile);
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            "com.perfection.utkarsh.wardrobe.fileprovider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
             }
-            // Continue only if the File was successfully created
-            System.out.println("7");
-            if (photoFile != null) {
-                System.out.println("8");
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.perfection.utkarsh.wardrobe.fileprovider",
-                        photoFile);
-                System.out.println("9");
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                System.out.println("10");
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
         } catch (ActivityNotFoundException e) {
             // display error state to the user
         }
