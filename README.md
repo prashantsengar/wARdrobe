@@ -2,6 +2,7 @@
 
 Augmented Reality based wardrobe to help you choose what to buy to pair with that cute T-shirt you won at the last hackathon
 
+
 ## Why?
 
 I have a poor taste in fashion, specifically in selecting clothes (my mom doesn't agree with this though). I can't decide what would go with my bright yellow polka dot t-shirt. I need to wear everything and check in the mirror to see if it looks good on me.
