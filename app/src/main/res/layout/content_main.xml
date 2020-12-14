@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/LinearLayout1"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:gravity="center" >
+
+<GridView
+    android:id="@+id/gridview"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_weight=".85">
+
+</GridView>
+
+<ImageView
+    android:id="@+id/imageView1"
+    android:visibility="gone"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight=".25"
+    android:scaleType="fitXY"
+    android:src="@drawable/side_nav_bar" />
+
+</LinearLayout>
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--    xmlns:tools="http://schemas.android.com/tools"-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="match_parent"-->
+    <!--    app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+    <!--    tools:context=".MainActivity"-->
+    <!--    tools:showIn="@layout/app_bar_main">-->
+
+    <!--    <GridView-->
+    <!--        android:numColumns="auto_fit"-->
+    <!--        android:gravity="center"-->
+    <!--        android:columnWidth="100dp"-->
+    <!--        android:stretchMode="columnWidth"-->
+    <!--        android:layout_width="fill_parent"-->
+    <!--        android:layout_height="fill_parent"-->
+    <!--        android:id="@+id/grid"-->
+    <!--        />-->
+
+    <!--</LinearLayout>-->
